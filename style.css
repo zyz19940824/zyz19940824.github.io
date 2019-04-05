@@ -23,6 +23,8 @@ img {
 h2 {
   background-color: #222;
   color: #ddd;
+  margin-left:10px;
+  margin-right:0;
 }
 
 nav ul {
@@ -36,7 +38,6 @@ nav li {
 }
 
 nav a {
-  /* background-color: #333332; */
   color: #ddd;
   font-size: 26px;
   display: inline-block;
@@ -106,6 +107,8 @@ a:visited {
 .footer {
   background-color: #222;
   color: #ddd;
+  margin-left:20px;
+  margin-right: 20px;
 }
 
 .grid {
