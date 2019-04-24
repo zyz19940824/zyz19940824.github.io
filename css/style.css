@@ -45,7 +45,7 @@
 
 
 
-.about-me h1{
+#hello h1{
   font-size:34px;
   color:black;
   text-align:center;
@@ -58,7 +58,7 @@
 
 
 
-.about-me p.title{
+#hello p.title{
   color: #a4a4a4;
   margin:40px auto;
   width:300px;
@@ -69,7 +69,7 @@
   text-align:center;
 }
 
-.about-me h2{
+#hello h2{
   text-align:center;
   margin-top:50px;
   font-size:26px;
@@ -81,7 +81,7 @@
   font-weight:400;
 }
 
-.about-me p{
+#hello p{
   text-align:center;
   font-size:14px;
   width:250px;
