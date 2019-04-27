@@ -104,3 +104,10 @@
   display: table;
   clear: both;
 }
+
+.footer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#3c3c3c;
+}
