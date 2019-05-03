@@ -215,25 +215,25 @@
 #outer-container {
   color: #444;
   margin: auto;
-  width: 50%;
-  border: 3px solid green;
+  width: 80%;
   padding: 10px;
 
 }
 
 #sidebar {
 	display: table-cell;
-	width: 15%;
+	width: 40%;
 	vertical-align: top;
 }
 
 #content {
 	display: table-cell;
-	width: 85%;
+	width: 60%;
 	vertical-align: top;
 }
 
 .resume-text{
+  float:left;
   width:405px;
   overflow:hidden;
   height:auto;
@@ -244,16 +244,34 @@
   font-size:14px;
   line-height:26px;
 }
-.resume hr{
-  color: black;
-  margin-top:30px;
-  background-color: black;
-  height: 1px;
-  width:106px;
-  border:0;
+.resume {
+  float:right;
+}
+#sidebar img {
+  border: 1px solid #222;
+  border-radius: 4px;
+  margin-top: 20px;
+  padding: 5px;
+  width: 220px;
 }
 
 
 
 
 /* aboutme */
+
+.portfolio-text {
+  
+    float:left;
+    width:405px;
+    overflow:hidden;
+    height:auto;
+    font-weight:300;
+    float:left;
+    padding-left:40px;
+    color:black;
+    font-size:14px;
+    line-height:26px;
+  }
+
+}
