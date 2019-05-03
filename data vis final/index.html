@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Visualization Final</title>
+  <!-- LINK TO STYLESHEET -->
+  <!-- NOTE: You *could* use in-page <style> tags, for your charts
+         but it may be easier to simply add them to the stylesheet
+         provided here. -->
+  <link href="style.css" rel="stylesheet" />
+</head>
+<div class="tooltip"></div>
+<body>
+
+  <header>
+    <h1>Miami Dade Demographic</h1>
+    <h3>Made by Yaozhi Zhang</h3>
+  </header>
+  <script src="js/d3.min.js"></script>
+
+  <main>
+    <section>
+      Miami-Dade County is a county in the southeastern part of the U.S. state of Florida. It is the southeasternmost county on the U.S. mainland. According to a 2017 census report, the county had a population of 2,751,796, making it the most
+      populous county in Florida and the seventh-most populous county in the United States.
+      It is also Florida's third largest county in terms of land area, with 1,946 square miles (5,040 km2). The county seat is Miami, the principal city in South Florida.
+      Miami-Dade County is one of the three counties in South Florida that make up the Miami metropolitan area, which was home to an estimated 6,158,824 people in 2017.
+      <ol>
+        <li>Interactive Line Chart of Miami Dade Population</li>
+        <p>This chart shows population of Miami Dade from 1840-2010 with tool tip. the data shows that from 1840 to 1910, the population increased very slow and started to increase after 1910. The population of Miami Dade had become much faster
+          after 1920.</p>
+        <li>Bar Chart Of Other Races Population</li>
+        <p>This bar chart shows other races except from HISPAN, BLACKNH, WHITENH, AMERINDIANNH, ASIANNH and HAWIANNH in each county of Miami Dade.</p>
+        <li>Map Of Other Races</li>
+          <p>This Map shows other races except from HISPAN, BLACKNH, WHITENH, AMERINDIANNH, ASIANNH and HAWIANNH in each county of Miami Dade. Population amount shows by color from light green to black.</p>
+      </ol>
+    </section>
+
+    <section id="linechart">
+
+
+      <script>
+        d3.csv("data/pop_1840-2010.csv").then(function(data) {
+
+          data.forEach(function(d) {
+
+            d.Population = +d.Population;
+          });
+
+          var w = 1000,
+            h = 600;
+
+          var margin = {
+            top: 60,
+            right: 60,
+            bottom: 60,
+            left: 60
+          };
+
+          var svg = d3.select("body").append("svg");
+
+          svg.attr("width", w - margin.right)
+            .attr("height", h);
+
+          var xScale = d3.scaleLinear()
+            .domain(d3.extent(data, function(d) {
+              return d.Year
+            }))
+            .range([0, (w - margin.left - margin.right - 50)]);
+
+
+          var yScale = d3.scaleLinear()
+            .domain(d3.extent(data, function(d) {
+              return d.Population
+            }))
+            .range([(h - margin.top - margin.bottom), 0])
+
+
+          var line = d3.line()
+            .x(function(d) {
+              return xScale(d.Year);
+            })
+            .y(function(d) {
+              return yScale(d.Population);
+            });
+
+
+          svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .append("path")
+            .datum(data)
+            .attr("class", "data-line")
+            .attr("d", line);
+
+          var plots = svg.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("opacity", "1")
+            .attr("cx", function(d) {
+              return xScale(d.Year)
+            })
+            .attr("cy", function(d) {
+              return yScale(d.Population)
+            })
+            .attr("r", "4")
+            .on("mouseover", function(d) {
+              d3.select(".tooltip").classed("hidden", false);
+
+            })
+            .on("mousemove", function(d) {
+              var currentX = d3.event.pageX + 10;
+              var currentY = d3.event.pageY + 10;
+              d3.select(".tooltip")
+                .style("left", currentX + "px")
+                .style("top", currentY + "px")
+
+                .html("<p> Year: " + d.Year + "</br>" + "Population: " + d.Population + "</br>")
+            })
+            .on("mouseout", function(d) {
+
+              d3.select(".tooltip").classed("hidden", true);
+            });
+
+          svg.append("text")
+            .attr("x", 0 + 10)
+            .attr("y", 50)
+            .text("Population");
+
+          svg.append("text")
+            .attr("x", w - 100)
+            .attr("y", h - 50)
+            .text("Year");
+
+          var xAxis = d3.axisBottom()
+            .scale(xScale)
+            .ticks(10);
+
+          var yAxis = d3.axisLeft()
+            .scale(yScale)
+            .ticks(10)
+            .tickFormat(function(d) {
+              if ((d / 1000) >= 1) {
+                d = d / 1000 + "K";
+              }
+              return d;
+            });
+
+          svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + (h - margin.bottom) + ")")
+            .attr("class", "xaxis")
+            .call(xAxis);
+
+          svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("class", "yaxis")
+            .call(yAxis);
+
+        });
+      </script>
+    </section>
+
+
+    <section id="barchart">
+
+      <script>
+        var w = 1000;
+        var h = 800;
+
+        var margin = {
+          top: 20,
+          right: 20,
+          bottom: 30,
+          left: 50
+        };
+
+
+        d3.csv("data/Place_Pop_2010.csv").then(function(data) {
+
+          var name = [];
+
+          data.forEach(function(d) {
+            name.push(d.NAME10);
+          })
+          var svg = d3.select("body").append("svg");
+
+          var xScale = d3.scaleOrdinal()
+            .domain(name)
+            .range([0, w]);
+
+
+          var yScale = d3.scaleLinear()
+            .domain(d3.range(data, function(d) {
+              return d.OTHERNH
+            }))
+            .range([(h - margin.top - margin.bottom), 0]);
+
+
+          svg.attr("width", w)
+            .attr("height", h);
+
+          svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("width", 10)
+            .attr("height", function(d) {
+              return d.OTHERNH;
+            })
+            .style("stroke", "black")
+            .attr("x", function(d, i) {
+              return (i * 12) + 50;
+            })
+            .attr("y", function(d) {
+              return h - d.OTHERNH;
+            })
+            // console.log(d.w);
+            .on("mouseover", function(d) {
+              d3.select(".tooltip").classed("hidden", false);
+
+
+            })
+            .on("mousemove", function(d) {
+              var currentX = d3.event.pageX + 10;
+              var currentY = d3.event.pageY + 10;
+              d3.select(".tooltip")
+                .style("left", currentX + "px")
+                .style("top", currentY + "px")
+
+                .html(function() {
+
+                  return "<p> County Name: " + d.NAME10 + "<br/>" + "Other race in 2010: " + d.OTHERNH;
+                })
+
+            })
+            .on("mouseout", function(d) {
+
+              d3.select(".tooltip").classed("hidden", true);
+            });
+
+          // svg.append("text")
+          //   .attr("x", 0 + 10)
+          //   .attr("y", 200)
+          //    // .attr("transform", "rotate(90)")
+          //   .text("Population");
+
+          svg.append("text")
+            .attr("x", w - 80)
+            .attr("y", h - 2)
+            .text("county");
+
+        });
+      </script>
+    </section>
+
+    <section id="map">
+      <script>
+        var width = 1000;
+        var height = 600;
+
+
+        var margin = {
+          top: 60,
+          right: 80,
+          bottom: 60,
+          left: 60
+        };
+
+        var svg = d3.select("body")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("tranform", "translate(0" + margin.left + "," + margin.top + ")");
+
+        d3.json("data/pop2010.json").then(function(miami) {
+          d3.csv("data/Place_Pop_2010.csv").then(function(data) {
+
+
+            var miamiFeatures = miami.features
+
+
+            var projection = d3.geoMercator()
+              .scale(1)
+              .translate([0, 0])
+              .precision(0);
+            var path = d3.geoPath()
+              .projection(projection);
+
+            var colors = d3.scaleQuantize()
+              .domain(d3.extent(miamiFeatures, function(d) {
+                return d.properties.OTHERNH;
+              }))
+              .range(["#e5f4e0", "#cae4c0", "#aacf9d",
+                "#87b476", "#6c9e5a", "#548741",
+                "#40722d", "#2e5c1d", "#1e4410",
+                "#102a07", "#071602"
+              ]);
+
+            var bounds = path.bounds(miami);
+
+            var scale = .95 / Math.max((bounds[1][0] - bounds[0][0]) / width,
+              (bounds[1][1] - bounds[0][1]) / height);
+
+            var transl = [(width - scale * (bounds[1][0] + bounds[0][0])) / 2,
+              (height - scale * (bounds[1][1] + bounds[0][1])) / 2
+            ];
+
+            projection.scale(scale).translate(transl);
+
+
+            var map = svg.selectAll("path")
+              .data(miamiFeatures)
+              .enter()
+              .append("path")
+              .attr("d", path)
+              .attr("fill", function(d) {
+                // console.log(d.properties.pop);
+                if (d.properties.OTHERNH) {
+                  return colors(d.properties.OTHERNH);
+                } else {
+                  return "#ccc";
+                }
+              })
+              .attr("stroke", "black")
+
+
+              .on("mouseover", function(d) {
+                d3.select(".tooltip").classed("hidden", false);
+
+
+              })
+              .on("mousemove", function(d) {
+                var currentX = d3.event.pageX + 10;
+                var currentY = d3.event.pageY + 10;
+                d3.select(".tooltip")
+                  .style("left", currentX + "px")
+                  .style("top", currentY + "px")
+
+                  .html(function() {
+                    return "<p> County Name: " + d.properties.NAME10 + "<br/>" + "Other race in 2010: " + d.properties.OTHERNH;
+                  })
+
+              })
+              .on("mouseout", function(d) {
+
+                d3.select(".tooltip").classed("hidden", true);
+              });
+          })
+
+        });
+      </script>
+    </section>
+  </main>
+</body>
+
+</html>
